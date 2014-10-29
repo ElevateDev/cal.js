@@ -6,7 +6,7 @@ Based on [CLNDR.js](https://github.com/kylestetz/CLNDR) intervals branch.  Inter
 
 Setup
 ------------
-[jQuery](http://jquery.com/download/) and [Moment.js](http://momentjs.com/) should be declared before cal.js
+[jQuery](http://jquery.com/download/), [Underscore](http://underscorejs.org/) and [Moment.js](http://momentjs.com/) should be declared before cal.js
 
 Use
 ------------
