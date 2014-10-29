@@ -62,7 +62,8 @@
         previousYear: null,
         today: null,
         onMonthChange: null,
-        onYearChange: null
+        onYearChange: null,
+        onIntervalChange: null
       },
       targets: {
         nextButton: 'clndr-next-button',
