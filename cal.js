@@ -401,7 +401,7 @@
         .on('click', '.'+this.options.targets.todayButton, { context: this }, this.todayAction)
         .on('click', '.'+this.options.targets.nextYearButton, { context: this }, this.nextYearAction)
         .on('click', '.'+this.options.targets.previousYearButton, { context: this }, this.previousYearAction)
-        .on('mousewheel', '.'+this.options.targets.scrollable, { context: this }, this.scroll);
+        .on('wheel', '.'+this.options.targets.scrollable, { context: this }, this.scroll);
     };
 
     // If the user provided a click callback we'd like to give them something nice to work with.
@@ -447,13 +447,16 @@
      * Go to next on scroll down
      */
     Clndr.prototype.scroll = function(event) {
-      event.preventDefault();
-      if (event.originalEvent.wheelDelta >= 0) {
+      event.preventDefault(event);
+
+      var e = event.originalEvent || e; // old IE support
+      if (e.deltaY < 0) {
         event.data.context.back();
       }
       else {
         event.data.context.forward();
       }
+      return false;
     };
 
     /*
@@ -462,6 +465,7 @@
     Clndr.prototype.todayAction = function(event) { 
       var self = event.data.context; 
       var newIntervalStart = moment();
+      self.setSelected( newIntervalStart, false );
       self.applyChange( newIntervalStart,
         function(){ 
           if(self.options.clickEvents.today) {
@@ -501,9 +505,11 @@
       return this;
     };
     
-    Clndr.prototype.setSelected = function( date ) {
+    Clndr.prototype.setSelected = function( date, dontRender ) {
       this.selectedDate = date;
-      this.render();
+      if( !dontRender ){
+        this.render();
+      }
       return this;
     };
 
