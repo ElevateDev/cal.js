@@ -270,7 +270,7 @@
         }
       }
 
-      if( day.isSame( this.selectedDate, 'day') ){ extraClasses += " selected"; }
+      if( day.isSame( this.selectedDate, 'day') ){ extraClasses += " active"; }
 
       // These are important.
       extraClasses += " calendar-day-" + day.format("YYYY-MM-DD");
