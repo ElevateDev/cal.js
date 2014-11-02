@@ -61,6 +61,7 @@
         nextYear: null,
         previousYear: null,
         today: null,
+        onSelect: null,
         onMonthChange: null,
         onYearChange: null,
         onIntervalChange: null
@@ -93,7 +94,8 @@
       lengthOfTime: {
         interval: 1,
         intervalUnit: 'months',
-        increment: 1
+        increment: 1,
+        startDate: moment()
       }
     };
 
@@ -160,15 +162,14 @@
       return days;
     };
 
-    // This is where the magic happens. Given a moment object representing the current month,
-    // an array of calendarDay objects is constructed that contains appropriate events and
-    // classes depending on the circumstance.
-    Clndr.prototype.createDaysObject = function(startDate, endDate) {
-      // this array will hold numbers for the entire grid (even the blank spaces)
+    Clndr.prototype.createDaysObject = function() {
       var daysArray = [];
-      var date = startDate.clone();
-      var lengthOfInterval = endDate.diff(startDate, 'days');
+      var date = this.intervalStart.clone();
+      var startDate = this.intervalStart.clone();
+      var endDate = this.intervalEnd.clone();
+      var lengthOfInterval = this.intervalEnd.diff(startDate, 'days');
 
+      // TODO do something less crappy with this
       // this is a helper object so that days can resolve their classes correctly.
       // Don't use it for anything please.
       this._currentIntervalStart = startDate.clone();
@@ -296,7 +297,7 @@
       // TODO: figure out if this is the right way to ensure proper garbage collection?
       this.calendarContainer.children().remove();
 
-      var days = this.createDaysObject(this.intervalStart.clone(), this.intervalEnd.clone());
+      var days = this.createDaysObject();
       var data = {
           daysOfTheWeek: this.daysOfTheWeek,
           days: days,
@@ -510,6 +511,7 @@
       if( !dontRender ){
         this.render();
       }
+      this.options.clickEvents.onSelect.apply( this, [moment(this.selectedDate)] );
       return this;
     };
 
