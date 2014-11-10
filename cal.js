@@ -62,6 +62,7 @@
         nextYear: null,
         previousYear: null,
         today: null,
+        onSelect: null,
         onMonthChange: null,
         onYearChange: null,
         onIntervalChange: null
@@ -94,7 +95,8 @@
       lengthOfTime: {
         interval: 1,
         intervalUnit: 'months',
-        increment: 1
+        increment: 1,
+        startDate: moment()
       }
     };
 
@@ -161,15 +163,14 @@
       return days;
     };
 
-    // This is where the magic happens. Given a moment object representing the current month,
-    // an array of calendarDay objects is constructed that contains appropriate events and
-    // classes depending on the circumstance.
-    Clndr.prototype.createDaysObject = function(startDate, endDate) {
-      // this array will hold numbers for the entire grid (even the blank spaces)
+    Clndr.prototype.createDaysObject = function() {
       var daysArray = [];
-      var date = startDate.clone();
-      var lengthOfInterval = endDate.diff(startDate, 'days');
+      var date = this.intervalStart.clone();
+      var startDate = this.intervalStart.clone();
+      var endDate = this.intervalEnd.clone();
+      var lengthOfInterval = this.intervalEnd.diff(startDate, 'days');
 
+      // TODO do something less crappy with this
       // this is a helper object so that days can resolve their classes correctly.
       // Don't use it for anything please.
       this._currentIntervalStart = startDate.clone();
@@ -271,7 +272,7 @@
         }
       }
 
-      if( day.isSame( this.selectedDate, 'day') ){ extraClasses += " selected"; }
+      if( day.isSame( this.selectedDate, 'day') ){ extraClasses += " active"; }
 
       // These are important.
       extraClasses += " calendar-day-" + day.format("YYYY-MM-DD");
@@ -297,7 +298,7 @@
       // TODO: figure out if this is the right way to ensure proper garbage collection?
       this.calendarContainer.children().remove();
 
-      var days = this.createDaysObject(this.intervalStart.clone(), this.intervalEnd.clone());
+      var days = this.createDaysObject();
       var data = {
           daysOfTheWeek: this.daysOfTheWeek,
           days: days,
@@ -402,7 +403,7 @@
         .on('click', '.'+this.options.targets.todayButton, { context: this }, this.todayAction)
         .on('click', '.'+this.options.targets.nextYearButton, { context: this }, this.nextYearAction)
         .on('click', '.'+this.options.targets.previousYearButton, { context: this }, this.previousYearAction)
-        .on('mousewheel', '.'+this.options.targets.scrollable, { context: this }, this.scroll);
+        .on('wheel', '.'+this.options.targets.scrollable, { context: this }, this.scroll);
     };
 
     // If the user provided a click callback we'd like to give them something nice to work with.
@@ -448,13 +449,16 @@
      * Go to next on scroll down
      */
     Clndr.prototype.scroll = function(event) {
-      event.preventDefault();
-      if (event.originalEvent.wheelDelta >= 0) {
+      event.preventDefault(event);
+
+      var e = event.originalEvent || e; // old IE support
+      if (e.deltaY < 0) {
         event.data.context.back();
       }
       else {
         event.data.context.forward();
       }
+      return false;
     };
 
     /*
@@ -463,6 +467,7 @@
     Clndr.prototype.todayAction = function(event) { 
       var self = event.data.context; 
       var newIntervalStart = moment();
+      self.setSelected( newIntervalStart, false );
       self.applyChange( newIntervalStart,
         function(){ 
           if(self.options.clickEvents.today) {
@@ -502,10 +507,14 @@
       return this;
     };
     
-    Clndr.prototype.setSelected = function( date ) {
+    Clndr.prototype.setSelected = function( date, dontRender ) {
       this.selectedDate = date;
       this.render();
       
+      if( !dontRender ){
+        this.render();
+      }
+
       if(this.options.onSelect ) {
         this.options.onSelect.apply( this, [date] );
       }
