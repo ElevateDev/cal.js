@@ -100,6 +100,16 @@ CLNDR is structured so that you don't really _need_ anything in your template.
 Currently CLNDR sets the class on a day to `'calendar-day-2013-05-30'` and uses it to determine the date when a user clicks on it. Thus, click events will only work if `days.classes` is included in your day element's `class` attribute as seen above.
 
 
+Hooks
+---------------------
+Pass in onSelect function or set
+
+```javascript
+cal.options.onSelect
+```
+after creation.
+
+
 Some Configuration
 ==================
 
