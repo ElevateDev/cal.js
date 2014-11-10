@@ -54,6 +54,7 @@
     var defaults = {
       template: clndrTemplate,
       startWithMonth: null,
+      onSelect: null,
       clickEvents: {
         click: null,
         nextMonth: null,
@@ -504,6 +505,11 @@
     Clndr.prototype.setSelected = function( date ) {
       this.selectedDate = date;
       this.render();
+      
+      if(this.options.onSelect ) {
+        this.options.onSelect.apply( this, [date] );
+      }
+
       return this;
     };
 
@@ -557,7 +563,7 @@
       ).endOf(this.options.lengthOfTime.intervalUnit);
     };
 
-    $.fn.clndr = function(options) {
+    jQuery.fn.clndr = function(options) {
       if(this.length === 1) {
         if(!this.data('plugin_clndr')) {
           var clndr_instance = new Clndr(this, options);
