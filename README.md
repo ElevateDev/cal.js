@@ -102,13 +102,27 @@ Currently CLNDR sets the class on a day to `'calendar-day-2013-05-30'` and uses 
 
 Hooks
 ---------------------
-Pass in onSelect function or set
 
+Hooks provided are 
 ```javascript
-cal.options.onSelect
+    {
+      onSelect
+      onRender
+      clickEvents: {
+        click
+        nextMonth
+        previousMonth
+        nextYear
+        previousYear
+        today
+        onMonthChange
+        onYearChange
+        onIntervalChange
+      }
+    }
 ```
-after creation.
 
+Note that onMonth and onYear hooks activate when the intervalStart crosses the boundry.
 
 Some Configuration
 ==================

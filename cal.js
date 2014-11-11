@@ -55,6 +55,7 @@
       template: clndrTemplate,
       startWithMonth: null,
       onSelect: null,
+      onRender: null,
       clickEvents: {
         click: null,
         nextMonth: null,
@@ -62,7 +63,6 @@
         nextYear: null,
         previousYear: null,
         today: null,
-        onSelect: null,
         onMonthChange: null,
         onYearChange: null,
         onIntervalChange: null
@@ -80,7 +80,6 @@
       extras: null,
       extraDateData: null,
       dateParameter: 'date',
-      doneRendering: null,
       render: null,
       daysOfTheWeek: null,
       ready: null,
@@ -356,8 +355,8 @@
       }
 
 
-      if(this.options.doneRendering) {
-        this.options.doneRendering.apply(this, []);
+      if(this.options.onRender) {
+        this.options.onRender.apply(this, []);
       }
     };
 
